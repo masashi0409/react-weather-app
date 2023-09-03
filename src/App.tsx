@@ -4,11 +4,12 @@ import React, { useState } from 'react';
 import Title from "./components/Title";
 import Form from "./components/Form";
 import Result from "./components/Results";
+import Loading from "./components/Loading";
 import './App.css';
 
 const key: string = 'xxx';
 
-type ResultsStateType = {
+ export type ResultsStateType = {
   country: string,
   cityName: string,
   temperature: string,
@@ -17,8 +18,8 @@ type ResultsStateType = {
 }
 
 function App() {
-
-  const [city, setCity] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false)
+  const [city, setCity] = useState<string>("")
   const [results, setResults] = useState({
     country: "",
     cityName: "",
@@ -28,7 +29,8 @@ function App() {
   });
 
   const getWeather = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+    e.preventDefault()
+    setLoading(true)
     fetch(`https://api.weatherapi.com/v1/current.json?key=${key}&q=${city}&aqi=no`)
     .then(res => res.json())
     .then(data => {
@@ -40,6 +42,7 @@ function App() {
         icon: data.current.condition.icon,
       })
         setCity("")
+        setLoading(false)
       }
     )
     .catch(err => alert("エラーが発生しました。リロードしてもう一度トライしてください。"))
@@ -50,7 +53,7 @@ function App() {
       <div className="container">
         <Title />
         <Form setCity={setCity} city={city} getWeather={getWeather} />
-        <Result results={results}/>
+        {loading ? <Loading /> : <Result results={results}/>}
       </div>
     </div>
   );
