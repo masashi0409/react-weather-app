@@ -31,7 +31,7 @@ function App() {
     e.preventDefault();
     fetch(`https://api.weatherapi.com/v1/current.json?key=${key}&q=${city}&aqi=no`)
     .then(res => res.json())
-    .then(data =>
+    .then(data => {
       setResults({
         country: data.location.country,
         cityName: data.location.name,
@@ -39,6 +39,8 @@ function App() {
         conditionText: data.current.condition.text,
         icon: data.current.condition.icon,
       })
+        setCity("")
+      }
     )
     .catch(err => alert("エラーが発生しました。リロードしてもう一度トライしてください。"))
   }
@@ -47,7 +49,7 @@ function App() {
     <div className="wrapper">
       <div className="container">
         <Title />
-        <Form setCity={setCity} getWeather={getWeather} />
+        <Form setCity={setCity} city={city} getWeather={getWeather} />
         <Result results={results}/>
       </div>
     </div>
